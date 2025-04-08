@@ -19,9 +19,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
-                    <a href="index.html" class="nav-item nav-link active">Home</a>
-                    <a href="about.html" class="nav-item nav-link">About</a>
-                    <a href="service.html" class="nav-item nav-link">Service</a>
+                    <a href="{% url 'home' %}" class="nav-item nav-link active">Home</a>
+                    <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
+                    <a href="{% url 'service' %}" class="nav-item nav-link">Service</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                         <div class="dropdown-menu m-0">
@@ -32,7 +32,7 @@
                             <a href="404.html" class="dropdown-item">404 Page</a>
                         </div>
                     </div>
-                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
                 </div>
                 <a href="" class="btn btn-light rounded-pill text-primary py-2 px-4 ms-lg-5">Book a session</a>
             </div>
@@ -42,12 +42,12 @@
             <div class="container">
                 <div class="row g-5 align-items-center">
                     <div class="col-lg-6 text-center text-lg-start">
-                        <h1 class="text-white mb-4 animated zoomIn">We Help To Push Your Business To The Top Level</h1>
+                        <h1 class="text-white mb-4 animated zoomIn">The Therapist You Can Trust</h1>
                         <p class="text-white pb-3 animated zoomIn">Tempor rebum no at dolore lorem clita rebum rebum ipsum rebum stet dolor sed justo kasd. Ut dolor sed magna dolor sea diam. Sit diam sit justo amet ipsum vero ipsum clita lorem</p>
                         <a href="" class="btn btn-outline-light rounded-pill border-2 py-3 px-5 animated slideInRight">Learn More</a>
                     </div>
                     <div class="col-lg-6 text-center text-lg-start">
-                        <img class="img-fluid animated zoomIn" src="img/hero.png" alt="">
+                        <img class="img-fluid animated zoomIn" src="{% static 'img/therapy.jpg'%}" alt="">
                     </div>
                 </div>
             </div>
