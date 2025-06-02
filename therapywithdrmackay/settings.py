@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*o4l2q(j-@hs&hg+=)2@g1f&rvn8og#0uul%2xi6scvwr&mqan'
+SECRET_KEY = config("SK")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -118,20 +118,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [
-    'therapywithdrmackay/static'
-]
+# STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [BASE_DIR / "static"]  # If using a custom static directory
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-#Email configuration
+# Email configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False                     # True if using 587, False if using 465
+EMAIL_USE_SSL = True                    # Use True only if using SSL (port 465)
+EMAIL_HOST_USER = config("EADDRESS")
+EMAIL_HOST_PASSWORD = config("EPASSWORD")
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
