@@ -79,3 +79,5 @@ def get_booked_slots(request):
 
 def booking_success(request):
     return render(request, 'booking_success.html')
+
+
