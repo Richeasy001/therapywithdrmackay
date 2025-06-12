@@ -32,10 +32,11 @@
           <label class="block text-gray-700 font-semibold mb-1">Date</label>
           <input type="date" name="date" id="dateInput" required class="w-full border-gray-300 rounded-lg p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
+
         <div class="md:col-span-2" id="timeSlotContainer" style="display:none;">
           <label class="block text-gray-700 font-semibold mb-1">Time</label>
           <select name="time" id="timeSelect" class="w-full border-gray-300 rounded-lg p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <!-- Dynamic time options -->
+            <!-- Dynamic time options will go here -->
           </select>
         </div>
         <div class="md:col-span-2">
@@ -55,46 +56,51 @@
 </div>
 
 <script>
-    const dateInput = document.getElementById('dateInput');
-    const timeSlotContainer = document.getElementById('timeSlotContainer');
-    const timeSelect = document.getElementById('timeSelect');
-  
-    const availableTimeSlots = [
-      '08:00', '09:00', '10:00', '11:00', '12:00',
-      '13:00', '14:00', '15:00', '16:00'
-    ];
-  
-    // Fixed: use `date`, not `Date`
-    const fetchBookedSlots = async (date) => {
-      const response = await fetch(`/pagesapi/booked-timeslots/?date=${date}`);
-      const data = await response.json();
-      return data.booked_slots || [];
-    };
-  
-    dateInput.addEventListener('change', async () => {
-      const selectedDate = dateInput.value;
-      if (selectedDate) {
-        timeSlotContainer.style.display = 'block';
-        timeSelect.innerHTML = '';
-  
-        const bookedSlots = await fetchBookedSlots(selectedDate);
-        const freeSlots = availableTimeSlots.filter(time => !bookedSlots.includes(time));
-  
-        if (freeSlots.length === 0) {
+  const dateInput = document.getElementById('dateInput');
+  const timeSlotContainer = document.getElementById('timeSlotContainer');
+  const timeSelect = document.getElementById('timeSelect');
+
+  const availableTimeSlots = [
+    '08:00', '09:00', '10:00', '11:00', '12:00',
+    '13:00', '14:00', '15:00', '16:00'
+  ];
+
+  const fetchBookedSlots = async (date) => {
+    const response = await fetch(`/api/booked-timeslots/?date=${date}`);
+    const data = await response.json();
+    return data.booked_slots || [];
+  };
+
+  dateInput.addEventListener('change', async () => {
+    const selectedDate = dateInput.value;
+    if (selectedDate) {
+      timeSlotContainer.style.display = 'block';
+      timeSelect.innerHTML = '';
+
+      const bookedSlots = await fetchBookedSlots(selectedDate);
+      const freeSlots = availableTimeSlots.filter(time => !bookedSlots.includes(time));
+
+      if (freeSlots.length === 0) {
+        const option = document.createElement('option');
+        option.disabled = true;
+        option.textContent = 'No available time slots';
+        timeSelect.appendChild(option);
+      } else {
+        availableTimeSlots.forEach(time => {
           const option = document.createElement('option');
-          option.disabled = true;
-          option.textContent = 'No available time slots';
+          option.value = time;
+          option.textContent = time;
+
+          // If the time is already booked, mark it as "Booked"
+          if (bookedSlots.includes(time)) {
+            option.textContent = `${time} - Booked`;
+            option.disabled = true;  // Disable the booked slots
+          }
           timeSelect.appendChild(option);
-        } else {
-          freeSlots.forEach(time => {
-            const option = document.createElement('option');
-            option.value = time;
-            option.textContent = time;
-            timeSelect.appendChild(option);
-          });
-        }
+        });
       }
-    });
-  </script>
+    }
+  });
+</script>
   
 {% endblock %}

@@ -1,5 +1,5 @@
-{%extends 'base.html' %}
-{%load static%}
+{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <!-- Contact Start -->
@@ -11,30 +11,30 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
-                <p class="text-center mb-4">The contact form is currently inactive. Get a functional and working contact form with Ajax & PHP in a few minutes. Just copy and paste the files, add a little code and you're done. <a href="https://htmlcodex.com/contact-form">Download Now</a>.</p>
-                <form>
+                <form role="form" name="ajax-form" id="ajax-form" method="post" class="form-main" action="{% url 'contact_form_submit' %}">
+                    {% csrf_token %}
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="name" placeholder="Your Name">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
                                 <label for="name">Your Name</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="email" class="form-control" id="email" placeholder="Your Email">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
                                 <label for="email">Your Email</label>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
                                 <label for="subject">Subject</label>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-floating">
-                                <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 150px"></textarea>
+                                <textarea class="form-control" id="message" name="message" placeholder="Leave a message here" style="height: 150px" required></textarea>
                                 <label for="message">Message</label>
                             </div>
                         </div>
@@ -49,4 +49,61 @@
 </div>
 <!-- Contact End -->
 
-{%endblock%}
+<!-- Success Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Thank you!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modal-body-content">
+        Your message has been sent successfully. A member of our team will respond as soon as possible.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery and AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#ajax-form').on('submit', function (e) {
+        e.preventDefault();
+
+        // Validate all fields are filled
+        let name = $('#name').val().trim();
+        let email = $('#email').val().trim();
+        let subject = $('#subject').val().trim();
+        let message = $('#message').val().trim();
+
+        if (!name || !email || !subject || !message) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: {
+                'name': name,
+                'email': email,
+                'subject': subject,
+                'message': message,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (response) {
+                $('#modal-body-content').text(response.message || 'Your message has been sent successfully. A member of our team will respond as soon as possible.');
+                let myModal = new bootstrap.Modal(document.getElementById('emailModal'));
+                myModal.show();
+                $('#ajax-form')[0].reset();  // Clear form
+            },
+            error: function (xhr) {
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

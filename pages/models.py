@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 
 class SessionBooking(models.Model):
@@ -10,6 +11,7 @@ class SessionBooking(models.Model):
     time = models.TimeField()
     subject = models.CharField(max_length=255)
     summary = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('date', 'time')  # Prevent double booking
